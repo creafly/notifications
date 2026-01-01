@@ -1,0 +1,33 @@
+{
+  "errors": {
+    "internalError": "Internal server error",
+    "validationFailed": "Validation failed",
+    "unauthorized": "Unauthorized",
+    "forbidden": "Access denied",
+    "userBlocked": "Your account has been blocked",
+    "notFound": "Not found"
+  },
+  "notification": {
+    "markedRead": "Notification marked as read",
+    "allMarkedRead": "All notifications marked as read",
+    "deleted": "Notification deleted"
+  },
+  "invitation": {
+    "created": "Invitation sent successfully",
+    "accepted": "Invitation accepted",
+    "rejected": "Invitation rejected",
+    "expired": "Invitation has expired",
+    "notFound": "Invitation not found"
+  },
+  "push": {
+    "created": "Push notification created",
+    "updated": "Push notification updated",
+    "deleted": "Push notification deleted",
+    "sent": "Push notification sent",
+    "cancelled": "Push notification cancelled",
+    "markedRead": "Push notification marked as read",
+    "notFound": "Push notification not found",
+    "alreadySent": "Push notification already sent",
+    "noRecipients": "No recipients specified"
+  }
+}
