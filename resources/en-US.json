@@ -1,0 +1,20 @@
+{
+  "errors": {
+    "internalError": "Internal server error",
+    "validationFailed": "Validation failed",
+    "unauthorized": "Unauthorized",
+    "notFound": "Not found"
+  },
+  "notification": {
+    "markedRead": "Notification marked as read",
+    "allMarkedRead": "All notifications marked as read",
+    "deleted": "Notification deleted"
+  },
+  "invitation": {
+    "created": "Invitation sent successfully",
+    "accepted": "Invitation accepted",
+    "rejected": "Invitation rejected",
+    "expired": "Invitation has expired",
+    "notFound": "Invitation not found"
+  }
+}
