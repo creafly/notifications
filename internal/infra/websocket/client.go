@@ -60,7 +60,7 @@ func ServeWs(hub *Hub, c *gin.Context) {
 func (c *Client) readPump() {
 	defer func() {
 		c.Hub.Unregister(c)
-		c.Conn.Close()
+		_ = c.Conn.Close()
 	}()
 
 	c.Conn.SetReadLimit(maxMessageSize)
@@ -85,7 +85,7 @@ func (c *Client) writePump() {
 	ticker := time.NewTicker(pingPeriod)
 	defer func() {
 		ticker.Stop()
-		c.Conn.Close()
+		_ = c.Conn.Close()
 	}()
 
 	for {

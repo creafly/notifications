@@ -50,7 +50,7 @@ func SetupTestDB(t *testing.T) *TestDB {
 
 func (tdb *TestDB) Cleanup(t *testing.T) {
 	cleanupTables(t, tdb.DB)
-	tdb.DB.Close()
+	_ = tdb.DB.Close()
 }
 
 func runMigrations(t *testing.T, db *sqlx.DB) {

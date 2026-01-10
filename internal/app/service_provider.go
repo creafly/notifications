@@ -80,7 +80,7 @@ func (sp *serviceProvider) GetDB() *sqlx.DB {
 		sp.db = db
 
 		closer.Bind(func() {
-			sp.db.Close()
+			_ = sp.db.Close()
 		})
 	}
 	return sp.db
