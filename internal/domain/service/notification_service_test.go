@@ -7,6 +7,7 @@ import (
 
 	"github.com/creafly/notifications/internal/domain/entity"
 	"github.com/creafly/notifications/internal/testutil/mocks"
+	"github.com/creafly/notifications/internal/utils"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -29,7 +30,7 @@ func TestNotificationService_Create(t *testing.T) {
 		svc := NewNotificationService(repoMock, nil)
 
 		input := CreateNotificationInput{
-			UserID:  uuid.New(),
+			UserID:  utils.GenerateUUID(),
 			Type:    entity.NotificationTypeSystem,
 			Title:   "Test",
 			Message: "Test message",
@@ -54,7 +55,7 @@ func TestNotificationService_Create(t *testing.T) {
 		svc := NewNotificationService(repoMock, hub)
 
 		input := CreateNotificationInput{
-			UserID:  uuid.New(),
+			UserID:  utils.GenerateUUID(),
 			Type:    entity.NotificationTypeSystem,
 			Title:   "Test",
 			Message: "Test message",
@@ -75,7 +76,7 @@ func TestNotificationService_Create(t *testing.T) {
 		svc := NewNotificationService(repoMock, nil)
 
 		input := CreateNotificationInput{
-			UserID:  uuid.New(),
+			UserID:  utils.GenerateUUID(),
 			Type:    entity.NotificationTypeSystem,
 			Title:   "Test",
 			Message: "Test message",
@@ -90,10 +91,10 @@ func TestNotificationService_GetByID(t *testing.T) {
 	ctx := context.Background()
 
 	t.Run("success", func(t *testing.T) {
-		notificationID := uuid.New()
+		notificationID := utils.GenerateUUID()
 		notification := &entity.Notification{
 			ID:     notificationID,
-			UserID: uuid.New(),
+			UserID: utils.GenerateUUID(),
 			Title:  "Test",
 		}
 
@@ -119,7 +120,7 @@ func TestNotificationService_GetByID(t *testing.T) {
 
 		svc := NewNotificationService(repoMock, nil)
 
-		_, err := svc.GetByID(ctx, uuid.New())
+		_, err := svc.GetByID(ctx, utils.GenerateUUID())
 		assert.ErrorIs(t, err, ErrNotificationNotFound)
 	})
 }
@@ -128,10 +129,10 @@ func TestNotificationService_GetByUserID(t *testing.T) {
 	ctx := context.Background()
 
 	t.Run("success", func(t *testing.T) {
-		userID := uuid.New()
+		userID := utils.GenerateUUID()
 		notifications := []*entity.Notification{
-			{ID: uuid.New(), UserID: userID},
-			{ID: uuid.New(), UserID: userID},
+			{ID: utils.GenerateUUID(), UserID: userID},
+			{ID: utils.GenerateUUID(), UserID: userID},
 		}
 
 		repoMock := &mocks.NotificationRepositoryMock{
@@ -157,7 +158,7 @@ func TestNotificationService_GetByUserID(t *testing.T) {
 
 		svc := NewNotificationService(repoMock, nil)
 
-		_, err := svc.GetByUserID(ctx, uuid.New(), 0, 0)
+		_, err := svc.GetByUserID(ctx, utils.GenerateUUID(), 0, 0)
 		require.NoError(t, err)
 	})
 
@@ -171,7 +172,7 @@ func TestNotificationService_GetByUserID(t *testing.T) {
 
 		svc := NewNotificationService(repoMock, nil)
 
-		_, err := svc.GetByUserID(ctx, uuid.New(), 500, 0)
+		_, err := svc.GetByUserID(ctx, utils.GenerateUUID(), 500, 0)
 		require.NoError(t, err)
 	})
 }
@@ -180,9 +181,9 @@ func TestNotificationService_GetUnreadByUserID(t *testing.T) {
 	ctx := context.Background()
 
 	t.Run("success", func(t *testing.T) {
-		userID := uuid.New()
+		userID := utils.GenerateUUID()
 		notifications := []*entity.Notification{
-			{ID: uuid.New(), UserID: userID, Status: entity.NotificationStatusUnread},
+			{ID: utils.GenerateUUID(), UserID: userID, Status: entity.NotificationStatusUnread},
 		}
 
 		repoMock := &mocks.NotificationRepositoryMock{
@@ -211,7 +212,7 @@ func TestNotificationService_GetUnreadCount(t *testing.T) {
 
 		svc := NewNotificationService(repoMock, nil)
 
-		count, err := svc.GetUnreadCount(ctx, uuid.New())
+		count, err := svc.GetUnreadCount(ctx, utils.GenerateUUID())
 		require.NoError(t, err)
 		assert.Equal(t, 5, count)
 	})
@@ -229,7 +230,7 @@ func TestNotificationService_MarkAsRead(t *testing.T) {
 
 		svc := NewNotificationService(repoMock, nil)
 
-		err := svc.MarkAsRead(ctx, uuid.New())
+		err := svc.MarkAsRead(ctx, utils.GenerateUUID())
 		require.NoError(t, err)
 	})
 }
@@ -246,7 +247,7 @@ func TestNotificationService_MarkAllAsRead(t *testing.T) {
 
 		svc := NewNotificationService(repoMock, nil)
 
-		err := svc.MarkAllAsRead(ctx, uuid.New())
+		err := svc.MarkAllAsRead(ctx, utils.GenerateUUID())
 		require.NoError(t, err)
 	})
 }
@@ -263,7 +264,7 @@ func TestNotificationService_Delete(t *testing.T) {
 
 		svc := NewNotificationService(repoMock, nil)
 
-		err := svc.Delete(ctx, uuid.New())
+		err := svc.Delete(ctx, utils.GenerateUUID())
 		require.NoError(t, err)
 	})
 }

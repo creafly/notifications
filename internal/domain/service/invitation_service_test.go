@@ -8,6 +8,7 @@ import (
 
 	"github.com/creafly/notifications/internal/domain/entity"
 	"github.com/creafly/notifications/internal/testutil/mocks"
+	"github.com/creafly/notifications/internal/utils"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -21,7 +22,7 @@ func (m *notificationServiceMock) Create(ctx context.Context, input CreateNotifi
 	if m.CreateFunc != nil {
 		return m.CreateFunc(ctx, input)
 	}
-	return &entity.Notification{ID: uuid.New()}, nil
+	return &entity.Notification{ID: utils.GenerateUUID()}, nil
 }
 
 func (m *notificationServiceMock) GetByID(ctx context.Context, id uuid.UUID) (*entity.Notification, error) {
@@ -67,11 +68,11 @@ func TestInvitationService_Create(t *testing.T) {
 		svc := NewInvitationService(invitationRepoMock, outboxMock, notifSvc)
 
 		input := CreateInvitationInput{
-			TenantID:    uuid.New(),
+			TenantID:    utils.GenerateUUID(),
 			TenantName:  "Test Tenant",
-			InviterID:   uuid.New(),
+			InviterID:   utils.GenerateUUID(),
 			InviterName: "Inviter",
-			InviteeID:   uuid.New(),
+			InviteeID:   utils.GenerateUUID(),
 			Email:       "test@example.com",
 		}
 
@@ -95,11 +96,11 @@ func TestInvitationService_Create(t *testing.T) {
 		svc := NewInvitationService(invitationRepoMock, outboxMock, notifSvc)
 
 		input := CreateInvitationInput{
-			TenantID:    uuid.New(),
+			TenantID:    utils.GenerateUUID(),
 			TenantName:  "Test Tenant",
-			InviterID:   uuid.New(),
+			InviterID:   utils.GenerateUUID(),
 			InviterName: "Inviter",
-			InviteeID:   uuid.New(),
+			InviteeID:   utils.GenerateUUID(),
 			Email:       "test@example.com",
 		}
 
@@ -112,10 +113,10 @@ func TestInvitationService_GetByID(t *testing.T) {
 	ctx := context.Background()
 
 	t.Run("success", func(t *testing.T) {
-		invitationID := uuid.New()
+		invitationID := utils.GenerateUUID()
 		invitation := &entity.Invitation{
 			ID:       invitationID,
-			TenantID: uuid.New(),
+			TenantID: utils.GenerateUUID(),
 		}
 
 		invitationRepoMock := &mocks.InvitationRepositoryMock{
@@ -144,7 +145,7 @@ func TestInvitationService_GetByID(t *testing.T) {
 
 		svc := NewInvitationService(invitationRepoMock, outboxMock, notifSvc)
 
-		_, err := svc.GetByID(ctx, uuid.New())
+		_, err := svc.GetByID(ctx, utils.GenerateUUID())
 		assert.ErrorIs(t, err, ErrInvitationNotFound)
 	})
 }
@@ -153,11 +154,11 @@ func TestInvitationService_Accept(t *testing.T) {
 	ctx := context.Background()
 
 	t.Run("success", func(t *testing.T) {
-		invitationID := uuid.New()
+		invitationID := utils.GenerateUUID()
 		invitation := &entity.Invitation{
 			ID:        invitationID,
-			TenantID:  uuid.New(),
-			InviterID: uuid.New(),
+			TenantID:  utils.GenerateUUID(),
+			InviterID: utils.GenerateUUID(),
 			Status:    entity.InvitationStatusPending,
 			ExpiresAt: time.Now().Add(24 * time.Hour),
 		}
@@ -190,12 +191,12 @@ func TestInvitationService_Accept(t *testing.T) {
 
 		svc := NewInvitationService(invitationRepoMock, outboxMock, notifSvc)
 
-		err := svc.Accept(ctx, uuid.New())
+		err := svc.Accept(ctx, utils.GenerateUUID())
 		assert.ErrorIs(t, err, ErrInvitationNotFound)
 	})
 
 	t.Run("not pending", func(t *testing.T) {
-		invitationID := uuid.New()
+		invitationID := utils.GenerateUUID()
 		invitation := &entity.Invitation{
 			ID:     invitationID,
 			Status: entity.InvitationStatusAccepted,
@@ -216,7 +217,7 @@ func TestInvitationService_Accept(t *testing.T) {
 	})
 
 	t.Run("expired", func(t *testing.T) {
-		invitationID := uuid.New()
+		invitationID := utils.GenerateUUID()
 		invitation := &entity.Invitation{
 			ID:        invitationID,
 			Status:    entity.InvitationStatusPending,
@@ -245,11 +246,11 @@ func TestInvitationService_Reject(t *testing.T) {
 	ctx := context.Background()
 
 	t.Run("success", func(t *testing.T) {
-		invitationID := uuid.New()
+		invitationID := utils.GenerateUUID()
 		invitation := &entity.Invitation{
 			ID:        invitationID,
-			TenantID:  uuid.New(),
-			InviterID: uuid.New(),
+			TenantID:  utils.GenerateUUID(),
+			InviterID: utils.GenerateUUID(),
 			Status:    entity.InvitationStatusPending,
 		}
 
@@ -281,12 +282,12 @@ func TestInvitationService_Reject(t *testing.T) {
 
 		svc := NewInvitationService(invitationRepoMock, outboxMock, notifSvc)
 
-		err := svc.Reject(ctx, uuid.New())
+		err := svc.Reject(ctx, utils.GenerateUUID())
 		assert.ErrorIs(t, err, ErrInvitationNotFound)
 	})
 
 	t.Run("not pending", func(t *testing.T) {
-		invitationID := uuid.New()
+		invitationID := utils.GenerateUUID()
 		invitation := &entity.Invitation{
 			ID:     invitationID,
 			Status: entity.InvitationStatusRejected,
@@ -321,7 +322,7 @@ func TestInvitationService_Cancel(t *testing.T) {
 
 		svc := NewInvitationService(invitationRepoMock, outboxMock, notifSvc)
 
-		err := svc.Cancel(ctx, uuid.New())
+		err := svc.Cancel(ctx, utils.GenerateUUID())
 		require.NoError(t, err)
 	})
 }
@@ -330,9 +331,9 @@ func TestInvitationService_GetByInviteeID(t *testing.T) {
 	ctx := context.Background()
 
 	t.Run("success", func(t *testing.T) {
-		inviteeID := uuid.New()
+		inviteeID := utils.GenerateUUID()
 		invitations := []*entity.Invitation{
-			{ID: uuid.New(), InviteeID: inviteeID},
+			{ID: utils.GenerateUUID(), InviteeID: inviteeID},
 		}
 
 		invitationRepoMock := &mocks.InvitationRepositoryMock{
@@ -355,9 +356,9 @@ func TestInvitationService_GetPendingByInviteeID(t *testing.T) {
 	ctx := context.Background()
 
 	t.Run("success", func(t *testing.T) {
-		inviteeID := uuid.New()
+		inviteeID := utils.GenerateUUID()
 		invitations := []*entity.Invitation{
-			{ID: uuid.New(), InviteeID: inviteeID, Status: entity.InvitationStatusPending},
+			{ID: utils.GenerateUUID(), InviteeID: inviteeID, Status: entity.InvitationStatusPending},
 		}
 
 		invitationRepoMock := &mocks.InvitationRepositoryMock{
@@ -380,9 +381,9 @@ func TestInvitationService_GetByTenantID(t *testing.T) {
 	ctx := context.Background()
 
 	t.Run("success", func(t *testing.T) {
-		tenantID := uuid.New()
+		tenantID := utils.GenerateUUID()
 		invitations := []*entity.Invitation{
-			{ID: uuid.New(), TenantID: tenantID},
+			{ID: utils.GenerateUUID(), TenantID: tenantID},
 		}
 
 		invitationRepoMock := &mocks.InvitationRepositoryMock{

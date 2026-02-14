@@ -8,6 +8,7 @@ import (
 
 	"github.com/creafly/notifications/internal/domain/entity"
 	"github.com/creafly/notifications/internal/domain/repository"
+	"github.com/creafly/notifications/internal/utils"
 	"github.com/creafly/outbox"
 	"github.com/google/uuid"
 )
@@ -59,7 +60,7 @@ func NewInvitationService(
 
 func (s *invitationService) Create(ctx context.Context, input CreateInvitationInput) (*entity.Invitation, error) {
 	invitation := &entity.Invitation{
-		ID:          uuid.New(),
+		ID:          utils.GenerateUUID(),
 		TenantID:    input.TenantID,
 		TenantName:  input.TenantName,
 		InviterID:   input.InviterID,

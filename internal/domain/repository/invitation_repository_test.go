@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/google/uuid"
 	"github.com/creafly/notifications/internal/domain/entity"
 	"github.com/creafly/notifications/internal/testutil"
+	"github.com/creafly/notifications/internal/utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -37,7 +37,7 @@ func TestInvitationRepository_Create(t *testing.T) {
 
 	t.Run("with role", func(t *testing.T) {
 		invitation := testutil.NewTestInvitation()
-		roleID := uuid.New()
+		roleID := utils.GenerateUUID()
 		invitation.RoleID = &roleID
 		err := repo.Create(ctx, invitation)
 		require.NoError(t, err)
@@ -67,7 +67,7 @@ func TestInvitationRepository_GetByID(t *testing.T) {
 	})
 
 	t.Run("not found", func(t *testing.T) {
-		_, err := repo.GetByID(ctx, uuid.New())
+		_, err := repo.GetByID(ctx, utils.GenerateUUID())
 		assert.Error(t, err)
 	})
 }
@@ -79,7 +79,7 @@ func TestInvitationRepository_GetByInviteeID(t *testing.T) {
 	repo := NewInvitationRepository(tdb.DB)
 	ctx := context.Background()
 
-	inviteeID := uuid.New()
+	inviteeID := utils.GenerateUUID()
 
 	for i := 0; i < 4; i++ {
 		invitation := testutil.NewTestInvitationWithInvitee(inviteeID)
@@ -103,7 +103,7 @@ func TestInvitationRepository_GetByInviteeID(t *testing.T) {
 	})
 
 	t.Run("empty for unknown invitee", func(t *testing.T) {
-		results, err := repo.GetByInviteeID(ctx, uuid.New())
+		results, err := repo.GetByInviteeID(ctx, utils.GenerateUUID())
 		require.NoError(t, err)
 		assert.Empty(t, results)
 	})
@@ -116,7 +116,7 @@ func TestInvitationRepository_GetPendingByInviteeID(t *testing.T) {
 	repo := NewInvitationRepository(tdb.DB)
 	ctx := context.Background()
 
-	inviteeID := uuid.New()
+	inviteeID := utils.GenerateUUID()
 
 	for i := 0; i < 2; i++ {
 		invitation := testutil.NewTestInvitationWithInvitee(inviteeID)
@@ -155,7 +155,7 @@ func TestInvitationRepository_GetByTenantID(t *testing.T) {
 	repo := NewInvitationRepository(tdb.DB)
 	ctx := context.Background()
 
-	tenantID := uuid.New()
+	tenantID := utils.GenerateUUID()
 
 	for i := 0; i < 3; i++ {
 		invitation := testutil.NewTestInvitationWithTenant(tenantID)
@@ -179,7 +179,7 @@ func TestInvitationRepository_GetByTenantID(t *testing.T) {
 	})
 
 	t.Run("empty for unknown tenant", func(t *testing.T) {
-		results, err := repo.GetByTenantID(ctx, uuid.New())
+		results, err := repo.GetByTenantID(ctx, utils.GenerateUUID())
 		require.NoError(t, err)
 		assert.Empty(t, results)
 	})
@@ -241,7 +241,7 @@ func TestInvitationRepository_Delete(t *testing.T) {
 	})
 
 	t.Run("non-existent invitation", func(t *testing.T) {
-		err := repo.Delete(ctx, uuid.New())
+		err := repo.Delete(ctx, utils.GenerateUUID())
 		assert.NoError(t, err)
 	})
 }

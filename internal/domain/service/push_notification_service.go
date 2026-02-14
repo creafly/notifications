@@ -7,6 +7,7 @@ import (
 
 	"github.com/creafly/notifications/internal/domain/entity"
 	"github.com/creafly/notifications/internal/domain/repository"
+	"github.com/creafly/notifications/internal/utils"
 	"github.com/google/uuid"
 )
 
@@ -75,7 +76,7 @@ func (s *pushNotificationService) Create(ctx context.Context, input CreatePushIn
 	}
 
 	push := &entity.PushNotification{
-		ID:             uuid.New(),
+		ID:             utils.GenerateUUID(),
 		Title:          input.Title,
 		Message:        input.Message,
 		TargetType:     input.TargetType,
@@ -212,7 +213,7 @@ func (s *pushNotificationService) sendToUsers(ctx context.Context, push *entity.
 	recipients := make([]*entity.PushNotificationRecipient, len(userIDs))
 	for i, userID := range userIDs {
 		recipients[i] = &entity.PushNotificationRecipient{
-			ID:                 uuid.New(),
+			ID:                 utils.GenerateUUID(),
 			PushNotificationID: push.ID,
 			UserID:             userID,
 			CreatedAt:          now,

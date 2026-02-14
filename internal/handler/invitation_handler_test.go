@@ -8,10 +8,11 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/creafly/notifications/internal/domain/entity"
 	"github.com/creafly/notifications/internal/domain/service"
+	"github.com/creafly/notifications/internal/utils"
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -97,7 +98,7 @@ func setupInvitationRouter(svc service.InvitationService) *gin.Engine {
 }
 
 func TestInvitationHandler_GetMyInvitations(t *testing.T) {
-	userID := uuid.New()
+	userID := utils.GenerateUUID()
 
 	t.Run("unauthorized", func(t *testing.T) {
 		svc := &invitationServiceMock{}
@@ -114,7 +115,7 @@ func TestInvitationHandler_GetMyInvitations(t *testing.T) {
 		svc := &invitationServiceMock{
 			GetPendingByInviteeIDFunc: func(ctx context.Context, inviteeID uuid.UUID) ([]*entity.Invitation, error) {
 				return []*entity.Invitation{
-					{ID: uuid.New(), InviteeID: inviteeID},
+					{ID: utils.GenerateUUID(), InviteeID: inviteeID},
 				}, nil
 			},
 		}
@@ -138,11 +139,11 @@ func TestInvitationHandler_GetMyInvitations(t *testing.T) {
 
 func TestInvitationHandler_GetByTenant(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
-		tenantID := uuid.New()
+		tenantID := utils.GenerateUUID()
 		svc := &invitationServiceMock{
 			GetByTenantIDFunc: func(ctx context.Context, tid uuid.UUID) ([]*entity.Invitation, error) {
 				return []*entity.Invitation{
-					{ID: uuid.New(), TenantID: tid},
+					{ID: utils.GenerateUUID(), TenantID: tid},
 				}, nil
 			},
 		}
@@ -176,7 +177,7 @@ func TestInvitationHandler_Accept(t *testing.T) {
 		}
 		router := setupInvitationRouter(svc)
 
-		invitationID := uuid.New()
+		invitationID := utils.GenerateUUID()
 		req := httptest.NewRequest(http.MethodPost, "/invitations/"+invitationID.String()+"/accept", nil)
 		w := httptest.NewRecorder()
 
@@ -192,7 +193,7 @@ func TestInvitationHandler_Accept(t *testing.T) {
 		}
 		router := setupInvitationRouter(svc)
 
-		invitationID := uuid.New()
+		invitationID := utils.GenerateUUID()
 		req := httptest.NewRequest(http.MethodPost, "/invitations/"+invitationID.String()+"/accept", nil)
 		w := httptest.NewRecorder()
 
@@ -208,7 +209,7 @@ func TestInvitationHandler_Accept(t *testing.T) {
 		}
 		router := setupInvitationRouter(svc)
 
-		invitationID := uuid.New()
+		invitationID := utils.GenerateUUID()
 		req := httptest.NewRequest(http.MethodPost, "/invitations/"+invitationID.String()+"/accept", nil)
 		w := httptest.NewRecorder()
 
@@ -237,7 +238,7 @@ func TestInvitationHandler_Reject(t *testing.T) {
 		}
 		router := setupInvitationRouter(svc)
 
-		invitationID := uuid.New()
+		invitationID := utils.GenerateUUID()
 		req := httptest.NewRequest(http.MethodPost, "/invitations/"+invitationID.String()+"/reject", nil)
 		w := httptest.NewRecorder()
 
@@ -253,7 +254,7 @@ func TestInvitationHandler_Reject(t *testing.T) {
 		}
 		router := setupInvitationRouter(svc)
 
-		invitationID := uuid.New()
+		invitationID := utils.GenerateUUID()
 		req := httptest.NewRequest(http.MethodPost, "/invitations/"+invitationID.String()+"/reject", nil)
 		w := httptest.NewRecorder()
 
@@ -263,13 +264,13 @@ func TestInvitationHandler_Reject(t *testing.T) {
 }
 
 func TestInvitationHandler_Create(t *testing.T) {
-	userID := uuid.New()
+	userID := utils.GenerateUUID()
 
 	t.Run("unauthorized", func(t *testing.T) {
 		svc := &invitationServiceMock{}
 		router := setupInvitationRouter(svc)
 
-		body := `{"tenantId":"` + uuid.New().String() + `","tenantName":"Test","inviteeId":"` + uuid.New().String() + `","email":"test@example.com"}`
+		body := `{"tenantId":"` + utils.GenerateUUID().String() + `","tenantName":"Test","inviteeId":"` + utils.GenerateUUID().String() + `","email":"test@example.com"}`
 		req := httptest.NewRequest(http.MethodPost, "/invitations", bytes.NewBufferString(body))
 		req.Header.Set("Content-Type", "application/json")
 		w := httptest.NewRecorder()
@@ -282,7 +283,7 @@ func TestInvitationHandler_Create(t *testing.T) {
 		svc := &invitationServiceMock{
 			CreateFunc: func(ctx context.Context, input service.CreateInvitationInput) (*entity.Invitation, error) {
 				return &entity.Invitation{
-					ID:       uuid.New(),
+					ID:       utils.GenerateUUID(),
 					TenantID: input.TenantID,
 					Email:    input.Email,
 				}, nil
@@ -299,7 +300,7 @@ func TestInvitationHandler_Create(t *testing.T) {
 			handler.Create(c)
 		})
 
-		body := `{"tenantId":"` + uuid.New().String() + `","tenantName":"Test","inviteeId":"` + uuid.New().String() + `","email":"test@example.com"}`
+		body := `{"tenantId":"` + utils.GenerateUUID().String() + `","tenantName":"Test","inviteeId":"` + utils.GenerateUUID().String() + `","email":"test@example.com"}`
 		req := httptest.NewRequest(http.MethodPost, "/invitations", bytes.NewBufferString(body))
 		req.Header.Set("Content-Type", "application/json")
 		w := httptest.NewRecorder()

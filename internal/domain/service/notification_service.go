@@ -8,6 +8,7 @@ import (
 
 	"github.com/creafly/notifications/internal/domain/entity"
 	"github.com/creafly/notifications/internal/domain/repository"
+	"github.com/creafly/notifications/internal/utils"
 	"github.com/google/uuid"
 )
 
@@ -63,7 +64,7 @@ func (s *notificationService) Create(ctx context.Context, input CreateNotificati
 	}
 
 	notification := &entity.Notification{
-		ID:        uuid.New(),
+		ID:        utils.GenerateUUID(),
 		UserID:    input.UserID,
 		TenantID:  input.TenantID,
 		Type:      input.Type,

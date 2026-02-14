@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/creafly/notifications/internal/domain/entity"
+	"github.com/creafly/notifications/internal/utils"
 	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/joho/godotenv"
@@ -101,8 +102,8 @@ func cleanupTables(t *testing.T, db *sqlx.DB) {
 func NewTestNotification() *entity.Notification {
 	now := time.Now()
 	return &entity.Notification{
-		ID:        uuid.New(),
-		UserID:    uuid.New(),
+		ID:        utils.GenerateUUID(),
+		UserID:    utils.GenerateUUID(),
 		TenantID:  nil,
 		Type:      entity.NotificationTypeSystem,
 		Title:     "Test Notification",
@@ -131,13 +132,13 @@ func NewTestNotificationWithTenant(userID, tenantID uuid.UUID) *entity.Notificat
 func NewTestInvitation() *entity.Invitation {
 	now := time.Now()
 	return &entity.Invitation{
-		ID:          uuid.New(),
-		TenantID:    uuid.New(),
+		ID:          utils.GenerateUUID(),
+		TenantID:    utils.GenerateUUID(),
 		TenantName:  "Test Tenant",
-		InviterID:   uuid.New(),
+		InviterID:   utils.GenerateUUID(),
 		InviterName: "Test Inviter",
-		InviteeID:   uuid.New(),
-		Email:       fmt.Sprintf("invitee-%s@example.com", uuid.New().String()[:8]),
+		InviteeID:   utils.GenerateUUID(),
+		Email:       fmt.Sprintf("invitee-%s@example.com", utils.GenerateUUID().String()[:8]),
 		RoleID:      nil,
 		Status:      entity.InvitationStatusPending,
 		ExpiresAt:   now.Add(7 * 24 * time.Hour),

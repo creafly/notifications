@@ -8,10 +8,11 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/creafly/notifications/internal/domain/entity"
 	"github.com/creafly/notifications/internal/domain/service"
+	"github.com/creafly/notifications/internal/utils"
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -99,13 +100,13 @@ func setupNotificationRouter(svc service.NotificationService) *gin.Engine {
 }
 
 func TestNotificationHandler_GetMyNotifications(t *testing.T) {
-	userID := uuid.New()
+	userID := utils.GenerateUUID()
 
 	t.Run("success", func(t *testing.T) {
 		svc := &notificationServiceMock{
 			GetByUserIDFunc: func(ctx context.Context, uid uuid.UUID, limit, offset int) ([]*entity.Notification, error) {
 				return []*entity.Notification{
-					{ID: uuid.New(), UserID: uid},
+					{ID: utils.GenerateUUID(), UserID: uid},
 				}, nil
 			},
 		}
@@ -134,7 +135,7 @@ func TestNotificationHandler_GetMyNotifications(t *testing.T) {
 }
 
 func TestNotificationHandler_GetUnreadCount(t *testing.T) {
-	userID := uuid.New()
+	userID := utils.GenerateUUID()
 
 	t.Run("unauthorized", func(t *testing.T) {
 		svc := &notificationServiceMock{}
@@ -185,7 +186,7 @@ func TestNotificationHandler_MarkAsRead(t *testing.T) {
 		}
 		router := setupNotificationRouter(svc)
 
-		notificationID := uuid.New()
+		notificationID := utils.GenerateUUID()
 		req := httptest.NewRequest(http.MethodPost, "/notifications/"+notificationID.String()+"/read", nil)
 		w := httptest.NewRecorder()
 
@@ -212,7 +213,7 @@ func TestNotificationHandler_MarkAsRead(t *testing.T) {
 		}
 		router := setupNotificationRouter(svc)
 
-		notificationID := uuid.New()
+		notificationID := utils.GenerateUUID()
 		req := httptest.NewRequest(http.MethodPost, "/notifications/"+notificationID.String()+"/read", nil)
 		w := httptest.NewRecorder()
 
@@ -230,7 +231,7 @@ func TestNotificationHandler_Delete(t *testing.T) {
 		}
 		router := setupNotificationRouter(svc)
 
-		notificationID := uuid.New()
+		notificationID := utils.GenerateUUID()
 		req := httptest.NewRequest(http.MethodDelete, "/notifications/"+notificationID.String(), nil)
 		w := httptest.NewRecorder()
 

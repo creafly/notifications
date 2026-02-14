@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/google/uuid"
 	"github.com/creafly/notifications/internal/domain/entity"
 	"github.com/creafly/notifications/internal/testutil"
+	"github.com/creafly/notifications/internal/utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -33,8 +33,8 @@ func TestNotificationRepository_Create(t *testing.T) {
 	})
 
 	t.Run("with tenant", func(t *testing.T) {
-		tenantID := uuid.New()
-		notification := testutil.NewTestNotificationWithTenant(uuid.New(), tenantID)
+		tenantID := utils.GenerateUUID()
+		notification := testutil.NewTestNotificationWithTenant(utils.GenerateUUID(), tenantID)
 		err := repo.Create(ctx, notification)
 		require.NoError(t, err)
 
@@ -76,7 +76,7 @@ func TestNotificationRepository_GetByID(t *testing.T) {
 	})
 
 	t.Run("not found", func(t *testing.T) {
-		_, err := repo.GetByID(ctx, uuid.New())
+		_, err := repo.GetByID(ctx, utils.GenerateUUID())
 		assert.Error(t, err)
 	})
 }
@@ -88,7 +88,7 @@ func TestNotificationRepository_GetByUserID(t *testing.T) {
 	repo := NewNotificationRepository(tdb.DB)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := utils.GenerateUUID()
 
 	for i := 0; i < 5; i++ {
 		notification := testutil.NewTestNotificationWithUser(userID)
@@ -124,7 +124,7 @@ func TestNotificationRepository_GetByUserID(t *testing.T) {
 	})
 
 	t.Run("empty for unknown user", func(t *testing.T) {
-		results, err := repo.GetByUserID(ctx, uuid.New(), 10, 0)
+		results, err := repo.GetByUserID(ctx, utils.GenerateUUID(), 10, 0)
 		require.NoError(t, err)
 		assert.Empty(t, results)
 	})
@@ -137,7 +137,7 @@ func TestNotificationRepository_GetUnreadByUserID(t *testing.T) {
 	repo := NewNotificationRepository(tdb.DB)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := utils.GenerateUUID()
 
 	for i := 0; i < 3; i++ {
 		notification := testutil.NewTestNotificationWithUser(userID)
@@ -170,7 +170,7 @@ func TestNotificationRepository_GetUnreadCount(t *testing.T) {
 	repo := NewNotificationRepository(tdb.DB)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := utils.GenerateUUID()
 
 	for i := 0; i < 4; i++ {
 		notification := testutil.NewTestNotificationWithUser(userID)
@@ -193,7 +193,7 @@ func TestNotificationRepository_GetUnreadCount(t *testing.T) {
 	})
 
 	t.Run("zero for user without notifications", func(t *testing.T) {
-		count, err := repo.GetUnreadCount(ctx, uuid.New())
+		count, err := repo.GetUnreadCount(ctx, utils.GenerateUUID())
 		require.NoError(t, err)
 		assert.Equal(t, 0, count)
 	})
@@ -222,7 +222,7 @@ func TestNotificationRepository_MarkAsRead(t *testing.T) {
 	})
 
 	t.Run("non-existent notification", func(t *testing.T) {
-		err := repo.MarkAsRead(ctx, uuid.New())
+		err := repo.MarkAsRead(ctx, utils.GenerateUUID())
 		assert.NoError(t, err)
 	})
 }
@@ -234,7 +234,7 @@ func TestNotificationRepository_MarkAllAsRead(t *testing.T) {
 	repo := NewNotificationRepository(tdb.DB)
 	ctx := context.Background()
 
-	userID := uuid.New()
+	userID := utils.GenerateUUID()
 
 	for i := 0; i < 3; i++ {
 		notification := testutil.NewTestNotificationWithUser(userID)
@@ -273,7 +273,7 @@ func TestNotificationRepository_Delete(t *testing.T) {
 	})
 
 	t.Run("non-existent notification", func(t *testing.T) {
-		err := repo.Delete(ctx, uuid.New())
+		err := repo.Delete(ctx, utils.GenerateUUID())
 		assert.NoError(t, err)
 	})
 }
