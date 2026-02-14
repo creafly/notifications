@@ -22,8 +22,14 @@ type App struct {
 	HttpServer      *http.Server
 }
 
-func NewApp() *App {
+func NewBaseApp() *App {
 	return (&App{}).initApp()
+}
+
+func NewApp() *App {
+	a := NewBaseApp()
+	a.initHttpServer()
+	return a
 }
 
 func (a *App) StartApp(ctx context.Context) {
@@ -101,7 +107,6 @@ func (a *App) initApp() *App {
 	})
 
 	a.initServiceProvider()
-	a.initHttpServer()
 
 	return a
 }
