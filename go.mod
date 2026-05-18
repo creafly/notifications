@@ -3,7 +3,7 @@ module github.com/creafly/notifications
 go 1.25.0
 
 require (
-	github.com/IBM/sarama v1.48.1
+	github.com/IBM/sarama v1.48.2
 	github.com/creafly/logger v0.2.0
 	github.com/creafly/middleware v0.2.1
 	github.com/creafly/outbox v0.1.2
